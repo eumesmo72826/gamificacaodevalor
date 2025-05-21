@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gamificação - Devalor</title>
+    <link rel="stylesheet" href="sdr.css">
+</head>
+<body>
+    <header>
+    <div class="container">
+        <div class="logo-container">
+        <a href="sdr.css">
+            <img src="logodev.png" alt="Logotipo da Empresa" class="logo">
+        </a>
+        </div>
+        <nav>
+        <ul>
+            <li><a href="index.html">Inicio</a></li>
+            <li><a href="regrasdr.html">Regras SDR</a></li>
+
+        </ul>
+        </nav>
+    </div>
+    </header>
+
+    
+    <main>
+        <section id="ranking">
+            <h2>Ranking de Vendas</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Posição</th>
+                        <th>Vendedor</th>
+                        <th>Borderô</th>
+                        <th>Pontos</th>
+                    </tr>
+                </thead>
+                <tbody id="tabela-ranking">
+                    </tbody>
+            </table>
+        </section>
+
+        <section id="destaque-do-mes">
+            <h2> Destaque do Mês ⭐</h2>
+            <div id="vendedor-destaque">
+                <p id="nome-destaque"></p>
+                <p id="vendas-destaque"></p>
+                <p id="pontos-destaque"></p>
+            </div>
+        </section>
+
+        <section id="premios">
+            <h2>Lista de Prêmios</h2>
+            <ul id="lista-premios">
+                </ul>
+        </section>
+
+        <section id="resgate-premios">
+            <h2>Resgatar Prêmio</h2>
+            <label for="vendedor-resgate">Vendedor:</label>
+            <select id="vendedor-resgate"></select>
+            <label for="premio-resgate">Prêmio:</label>
+            <select id="premio-resgate"></select>
+            <button onclick="resgatarPremio()">Resgatar</button>
+            <p id="mensagem-resgate"></p>
+        </section>
+    </main>
+
+    <script>
+        // Dados de exemplo (simulando dados vindos de um backend)
+        const vendedores = [
+            { id: 1, nome: "Laura", vendas: 50, pontos: 550 },
+            { id: 2, nome: "Sabrina", vendas: 78, pontos: 780 },
+
+        ];
+
+        const premios = [
+            { id: 104, nome: "Bolo", pontos: 56 },
+            { id: 104, nome: "Saída 15H", pontos: 800 },
+            { id: 104, nome: "Saída 15H", pontos: 800 },
+            { id: 104, nome: "Saída 15H", pontos: 800 },
+            { id: 104, nome: "Saída 15H", pontos: 800 },
+            { id: 104, nome: "Saída 15H", pontos: 800 },
+            { id: 104, nome: "Saída 15H", pontos: 800 },
+            { id: 104, nome: "Saída 15H", pontos: 800 },
+        ];
+
+        // Função para popular o ranking
+        function popularRanking() {
+            const tabelaRanking = document.getElementById('tabela-ranking');
+            tabelaRanking.innerHTML = ''; // Limpa a tabela
+
+            // Ordena os vendedores por número de vendas (maior primeiro)
+            const rankingOrdenado = [...vendedores].sort((a, b) => b.vendas - a.vendas);
+
+            rankingOrdenado.forEach((vendedor, index) => {
+                const row = tabelaRanking.insertRow();
+                const posicaoCell = row.insertCell();
+                const nomeCell = row.insertCell();
+                const vendasCell = row.insertCell();
+                const pontosCell = row.insertCell();
+
+                posicaoCell.textContent = index + 1;
+                nomeCell.textContent = vendedor.nome;
+                vendasCell.textContent = vendedor.vendas;
+                pontosCell.textContent = vendedor.pontos;
+            });
+        }
+
+        // Função para definir o vendedor destaque do mês (o primeiro no ranking)
+        function definirDestaque() {
+            const destaque = [...vendedores].sort((a, b) => b.vendas - a.vendas)[0];
+            document.getElementById('nome-destaque').textContent = `Nome: ${destaque.nome}`;
+            document.getElementById('vendas-destaque').textContent = `Vendas: ${destaque.vendas}`;
+            document.getElementById('pontos-destaque').textContent = `Pontos: ${destaque.pontos}`;
+        }
+
+        // Função para popular a lista de prêmios
+        function popularPremios() {
+            const listaPremios = document.getElementById('lista-premios');
+            listaPremios.innerHTML = ''; // Limpa a lista
+
+            premios.forEach(premio => {
+                const listItem = document.createElement('li');
+                listItem.textContent = `${premio.nome} - ${premio.pontos} pontos`;
+                listaPremios.appendChild(listItem);
+            });
+        }
+
+        // Função para popular os selects de resgate de prêmios
+        function popularResgate() {
+            const vendedorSelect = document.getElementById('vendedor-resgate');
+            const premioSelect = document.getElementById('premio-resgate');
+
+            vendedores.forEach(vendedor => {
+                const option = document.createElement('option');
+                option.value = vendedor.id;
+                option.textContent = vendedor.nome;
+                vendedorSelect.appendChild(option);
+            });
+
+            premios.forEach(premio => {
+                const option = document.createElement('option');
+                option.value = premio.id;
+                option.textContent = premio.nome;
+                premioSelect.appendChild(option); 
+            });
+        }
+
+        function resgatarPremio() {
+            const vendedorId = parseInt(document.getElementById('vendedor-resgate').value);
+            const premioId = parseInt(document.getElementById('premio-resgate').value);
+            const mensagemResgate = document.getElementById('mensagem-resgate');
+
+            const vendedor = vendedores.find(v => v.id === vendedorId);
+            const premio = premios.find(p => p.id === premioId);
+
+            if (!vendedor || !premio) {
+                mensagemResgate.textContent = "Selecione um vendedor e um prêmio válidos.";
+                return;
+            }
+
+            if (vendedor.pontos >= premio.pontos) {
+                // Simulação de resgate (você implementaria a lógica real aqui)
+                vendedor.pontos -= premio.pontos;
+                mensagemResgate.textContent = `${vendedor.nome} resgatou "${premio.nome}"! Pontos restantes: ${vendedor.pontos}`;
+                popularRanking(); // Atualiza o ranking após o resgate
+                definirDestaque(); // Atualiza o destaque
+            } else {
+                mensagemResgate.textContent = `${vendedor.nome} não tem pontos suficientes para resgatar "${premio.nome}".`;
+            }
+        }
+
+        // Inicialização
+        popularRanking();
+        definirDestaque();
+        popularPremios();
+        popularResgate();
+    </script>
+</body>
+</html>
